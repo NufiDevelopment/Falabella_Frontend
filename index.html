@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" /> <!-- Set character encoding -->
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge" /> <!-- Internet Explorer compatibility mode -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" /> <!-- For responsiveness on mobile browsers -->
+
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-eval' data: blob: filesystem: ws: gap: cdvfile: https://ssl.gstatic.com *; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'; img-src * data: 'unsafe-inline'; connect-src * 'unsafe-inline'; child-src *;" /> <!-- Allows control over where the resources are loaded from -->
+
+		<!-- Begin: Stylesheets -->
+		<link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
+		<link rel="stylesheet" href="assets/vendor/framework7/css/framework7.material.min.css" />
+		<link rel="stylesheet" href="assets/vendor/framework7/css/framework7.material.colors.min.css" />
+		<link rel="stylesheet" href="assets/vendor/framework7-plugins/keypad/framework7.keypad.min.css" />
+		<link rel="stylesheet" href="assets/vendor/framework7-plugins/indexed-list/framework7.indexed-list.min.css" />
+		<link rel="stylesheet" href="assets/vendor/framework7-plugins/toast/toast.css" />
+		<link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="assets/vendor/hamburgers/hamburgers.min.css" />
+		<link rel="stylesheet" href="assets/vendor/material-icons/material-icons.css" />
+		<link rel="stylesheet" href="assets/vendor/tooltipster/css/tooltipster.bundle.min.css" />
+		<link rel="stylesheet" href="assets/vendor/tooltipster/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-borderless.min.css" />
+
+		<link rel="stylesheet" href="assets/vendor/animate/animate.min.css" />
+		<link rel="stylesheet" href="assets/vendor/nectar/nectar.css" />
+		<link rel="stylesheet" href="assets/custom/css/components.css" />
+		<link rel="stylesheet" href="assets/custom/css/pages.css" />
+		<!-- End: Stylesheets -->
+
+		<title>SODIMAC</title>
+	</head>
+
+	<body class="theme-lightblue">
+		<div class="statusbar-overlay"></div>
+		<div class="panel-overlay"></div>
+
+		<div class="views">
+			<div class="view view-main">
+				<div class="pages navbar-fixed">
+					<div data-page="splash-screen" class="page no-navbar">
+		    			<div class="page-content">
+							<div class="splash">
+								<img class="logo" src="./assets/images/logo.png">
+								<div class="splash-preloader">
+									<span class="preloader"></span>
+								</div>
+							</div>
+						</div>
+          			</div>
+        		</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="assets/vendor/jquery/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="assets/vendor/framework7/js/framework7.min.js"></script>
+		<script type="text/javascript" src="assets/vendor/framework7-plugins/keypad/framework7.keypad.min.js"></script>
+		<script type="text/javascript" src="assets/vendor/framework7-plugins/indexed-list/framework7.indexed-list.min.js"></script>
+		<script type="text/javascript" src="assets/vendor/framework7-plugins/toast/toast.js"></script>
+		<script type="text/javascript" src="assets/vendor/jquery-validation/jquery.validate.min.js"></script>
+		<script type="text/javascript" src="assets/vendor/tooltipster/js/tooltipster.bundle.min.js"></script>
+
+		<script type="text/javascript" src="assets/custom/js/init.js"></script>
+		<script type="text/javascript" src="assets/vendor/nectar/nectar.js"></script>
+
+		<script type="text/javascript" src="assets/custom/js/pages.js"></script>
+		<script type="text/javascript" src="assets/custom/js/themes.js"></script>
+
+		<script type="text/javascript">
+			'use strict';
+			(function() {
+				myApp.init();
+			})();
+		</script>
+	</body>
+</html>

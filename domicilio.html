@@ -1,0 +1,91 @@
+<div data-page="domicilio" class="page">
+	<div class="header">
+		<img class="logo" src="./assets/images/logo.png">
+		<a href="#" class="button-back-header color-blue button-back">
+			<i class="fa fa-angle-left"></i>
+			<span>Regresar</span>
+		</a>
+	</div>
+
+  	<div class="page-content">
+  		<div class="content">
+  			
+  			<h2>Domicilio</h2>
+
+  			<p class="color-gray">Ahora ingresa los datos de tu domicilio</p>
+  			<p class="color-gray">Por favor, asegúrate que coincide con tu domicilio actual</p>
+
+			<form class="list-block no-hairlines" name="form" id="form">
+				<ul>
+					<li>
+						<div class="item-content">
+							<div class="item-inner item-input-outline">
+								<div class="item-title label">Calle *</div>
+								<input name="calle" type="text" placeholder="Ingrese la calle" autocomplete="off" />
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="row">
+				        	<div class="col-50">
+								<div class="item-content">
+									<div class="item-inner item-input-outline">
+										<div class="item-title label">Num Exterior *</div>
+										<input type="text" name="numero_exterior" placeholder="N. Exterior" autocomplete="off"/>
+									</div>
+								</div>
+				        	</div>
+				        	<div class="col-50">
+								<div class="item-content">
+									<div class="item-inner item-input-outline">
+										<div class="item-title label">Num Interior </div>
+										<input type="text" name="numero_interior" placeholder="N. Interior" autocomplete="off"/>
+									</div>
+								</div>
+				        	</div>
+				      	</div>
+					</li>
+					<li>
+						<div class="row">
+				        	<div class="col-50">
+								<div class="item-content">
+									<div class="item-inner item-input-outline">
+										<div class="item-title label">Código Postal *</div>
+										<input type="text" name="codigo_postal" placeholder="Código Postal" autocomplete="off"/>
+									</div>
+								</div>
+				        	</div>
+				        	<div class="col-50">
+								<div class="item-content">
+									<div class="item-inner item-input-outline">
+										<div class="item-title label">Colonia *</div>
+										<input type="text" id="picker-colonia" name="colonia" placeholder="Selecione su colonia"/>
+									</div>
+								</div>
+				        	</div>
+				      	</div>
+					</li>
+					<li>
+						<div class="item-content">
+							<div class="item-inner item-input-outline">
+								<div class="item-title label">Municipio *</div>
+								<input type="text" id="picker-municipio" name="municipio" placeholder="Selecione su municipio"/>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="item-content">
+							<div class="item-inner item-input-outline">
+								<div class="item-title label">Estado *</div>
+								<input type="text" id="picker-estado" name="estado" placeholder="Selecione su estado"/>
+							</div>
+						</div>
+					</li>
+				</ul>
+				
+  				<button class="button button-fill button-raised color-black" type="submit">CONTINUAR</button>
+  				<a class="button color-black button-back">REGRESAR</a>
+			</form>
+  		</div>
+	</div>
+</div>

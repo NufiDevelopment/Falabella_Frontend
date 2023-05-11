@@ -274,6 +274,14 @@ myApp.onPageInit('validar-datos', function(page) {
 myApp.onPageInit('domicilio', function(page) {
 	MAIN.event("Ingreso pantalla domicilio", "ingreso_domicilio");
 
+	MAIN.getStatus( (user) => {
+		let ocr = {};
+		try{ ocr = JSON.parse(user.json_ocr_frente); }catch(ex){}
+
+		$(`[name="calle"]`).val(user.calle || ocr?.ocr?.calle_numero);
+		$(`[name="codigo_postal"]`).val(user.codigo_postal || ocr?.ocr?.codigo_postal);
+	});
+
 	window.myApp.picker({
 		toolbarCloseText: "Aceptar",
 		input: '.page[data-page=domicilio] #picker-colonia',
@@ -334,7 +342,7 @@ myApp.onPageInit('autorizacion', function(page) {
 		$(`.phone-number`).html(`+52 ${user.numero}`);
 	});
 
-	$("#form").validate({
+	$(".page[data-page=autorizacion] #form").validate({
 		rules: {
 			condiciones: { required: true}
 		},

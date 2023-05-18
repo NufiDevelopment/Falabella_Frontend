@@ -8,7 +8,7 @@
 
 myApp.onPageInit('splash-screen', function(page) {
 	setTimeout(()=> {
-		MAIN.showView("domicilio");
+		MAIN.showView("inicio");
 	}, 500);
 });
 

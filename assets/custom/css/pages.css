@@ -395,3 +395,13 @@ p{
 .page[data-page=usuario-registrado] .slider-hero .swiper-pagination-bullet-active {
   background-color: #FFFFFF;
 }
+
+.page[data-page=usuario-registrado] .color-gray {
+  font-size: 1.2em;
+}
+
+.page[data-page=usuario-registrado] .folio{
+  font-weight: bold;
+  font-size: 1.4em;
+  margin-top: 8px;
+}

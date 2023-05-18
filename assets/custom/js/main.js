@@ -1,5 +1,8 @@
 'use strict';
 
+var CATALOGO_SEXO = {'H':'Hombre', 'M': 'Mujer'},
+	CATALOGO_ESTADO = {'AS': 'Aguascalientes', 'BC': 'Baja California', 'BS': 'Baja California Sur', 'CC': 'Campeche', 'CL': 'Coahuila de Zaragoza', 'CM': 'Colima', 'CS': 'Chiapas', 'CH': 'Chihuahua', 'DF': 'Distrito Federal', 'DG': 'Durango', 'GT': 'Guanajuato', 'GR': 'Guerrero', 'HG': 'Hidalgo', 'JC': 'Jalisco', 'MC': 'México', 'MN': 'Michoacán de Ocampo', 'MS': 'Morelos', 'NT': 'Nayarit', 'NL': 'Nuevo León', 'OC': 'Oaxaca', 'PL': 'Puebla', 'QT': 'Querétaro', 'QR': 'Quintana Roo', 'SP': 'San Luis Potosí', 'SL': 'Sinaloa', 'SR': 'Sonora', 'TC': 'Tabasco', 'TS': 'Tamaulipas', 'TL': 'Tlaxcala', 'VZ': 'Veracruz de Ignacio de la Llave', 'YN': 'Yucatán', 'ZS': 'Zacatecas'};
+
 (function() {
 	window.API_URL = "http://localhost:4000/api/v1/";
 	window.myApp = new Framework7({
@@ -133,7 +136,6 @@ var MAIN = {
 	    	callback(error, null);
 	   	};
 	}
-
 }
 
 $$(document).on('ajaxStart', function (e) {

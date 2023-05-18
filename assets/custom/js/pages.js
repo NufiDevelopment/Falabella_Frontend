@@ -8,7 +8,7 @@
 
 myApp.onPageInit('splash-screen', function(page) {
 	setTimeout(()=> {
-		MAIN.showView("inicio");
+		MAIN.showView("domicilio");
 	}, 500);
 });
 
@@ -35,6 +35,11 @@ myApp.onPageInit('informacion-personal', function(page) {
 		let option = $(this).data("option");
 		window.option = option;		
 		$("#form").submit();
+	});
+
+	$(`.page[data-page=informacion-personal] [name="terminos"]`).on("click", function(){
+		if(this.checked) $(`button`).removeAttr("disabled");
+		else $(`button`).attr('disabled', 'true');
 	});
 
 	$(".page[data-page=informacion-personal] #form").validate({
@@ -177,40 +182,51 @@ myApp.onPageInit('credencial-reverso-validar', function(page) {
 myApp.onPageInit('informacion-personal-full', function(page) {
 	MAIN.event("Ingreso pantalla informacion personal full", "ingreso_informacion_personal_full");
 
+	var calendarCustomDateFormat = window.myApp.calendar({
+	    	dateFormat: 'dd/mm/yyyy',
+	    	monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto' , 'Septiembre' , 'Octubre', 'Noviembre', 'Diciembre'],
+	    	dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+	    	toolbarCloseText: "Aceptar",
+			input: '.page[data-page=informacion-personal-full] #calendar'
+		}),
+		pickerSexo = window.myApp.picker({
+			toolbarCloseText: "Aceptar",
+			input: '.page[data-page=informacion-personal-full] #picker-sexo',
+			cols: [{
+	  			textAlign: 'center',
+	  			values: Object.values(CATALOGO_SEXO)
+			}]
+		}),
+		pickerEstado = window.myApp.picker({
+			toolbarCloseText: "Aceptar",
+			input: '.page[data-page=informacion-personal-full] #picker-estado',
+			cols: [{
+	  			textAlign: 'center',
+	  			values: Object.values(CATALOGO_ESTADO)
+			}]
+		});
+
+
 	MAIN.getStatus( (user) => {
 		let json = {};
 		try{ json = JSON.parse(user.json_ocr_frente); }catch(ex){}
 
+		let fecha_nacimiento = moment(json?.ocr?.fecha_nacimiento, "DD/MM/YYYY"),
+			sexo = json?.ocr?.sexo == "HOMBRE" ? "H" : (json?.ocr?.sexo == "MUJER" ? "M" : ""),
+			estado_code = json?.ocr?.curp ? json?.ocr?.curp.substring(11,13) : "";
+
+		if(user.fecha_nacimiento) calendarCustomDateFormat.setValue([fecha_nacimiento]);
+		else if(fecha_nacimiento.isValid()) calendarCustomDateFormat.setValue([fecha_nacimiento.format("YYYY-MM-DD")]);
+		
+		if(user.sexo) pickerSexo.setValue([user.sexo], 0);
+		else if(CATALOGO_SEXO[sexo]) pickerSexo.setValue([CATALOGO_SEXO[sexo]], 0);
+		
+		if(user.lugar_de_nacimiento) pickerEstado.setValue([user.lugar_de_nacimiento], 0)
+		else if(CATALOGO_ESTADO[estado_code]) pickerEstado.setValue([CATALOGO_ESTADO[estado_code]], 0);
+		
 		$(`[name="nombre"]`).val(user.nombre || json?.ocr?.nombre);
 		$(`[name="apellido_paterno"]`).val(user.apellido_paterno || json?.ocr?.apellido_paterno);
 		$(`[name="apellido_materno"]`).val(user.apellido_materno || json?.ocr?.apellido_materno);
-		$(`[name="lugar_de_nacimiento"]`).val(user.lugar_de_nacimiento);
-		$("#picker-sexo").val(user.sexo || json?.ocr?.sexo == "HOMBRE" ? "H" : null || json?.ocr?.sexo == "MUJER" ? "M" : null );
-	});
-	
-	var calendarCustomDateFormat = window.myApp.calendar({
-    	dateFormat: 'dd/mm/yyyy',
-		input: '.page[data-page=informacion-personal-full] #calendar'
-	});
-
-	window.myApp.picker({
-		toolbarCloseText: "Aceptar",
-		input: '.page[data-page=informacion-personal-full] #picker-sexo',
-		cols: [{
-  			textAlign: 'center',
-  			values: ['H', 'M'],
-       		displayValues: ['Hombre', 'Mujer']
-		}]
-	});
-
-	window.myApp.picker({
-		toolbarCloseText: "Aceptar",
-		input: '.page[data-page=informacion-personal-full] #picker-estado',
-		cols: [{
-  			textAlign: 'center',
-  			values: ['AS', 'BC', 'BS', 'CC', 'CL', 'CM', 'CS', 'CH', 'DF', 'DG', 'GT', 'GR', 'HG', 'JC', 'MC', 'MN', 'MS', 'NT', 'NL', 'OC', 'PL', 'QT', 'QR', 'SP', 'SL', 'SR', 'TC', 'TS', 'TL', 'VZ', 'YN', 'ZS'],
-       		displayValues: ['Aguascalientes', 'Baja California', 'Baja California Sur', 'Campeche', 'Coahuila de Zaragoza', 'Colima', 'Chiapas', 'Chihuahua', 'Distrito Federal', 'Durango', 'Guanajuato', 'Guerrero', 'Hidalgo', 'Jalisco', 'México', 'Michoacán de Ocampo', 'Morelos', 'Nayarit', 'Nuevo León', 'Oaxaca', 'Puebla', 'Querétaro', 'Quintana Roo', 'San Luis Potosí', 'Sinaloa', 'Sonora', 'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz de Ignacio de la Llave', 'Yucatán', 'Zacatecas']
-		}]
 	});
 
 	$(".page[data-page=informacion-personal-full] #form").validate({
@@ -274,39 +290,33 @@ myApp.onPageInit('validar-datos', function(page) {
 myApp.onPageInit('domicilio', function(page) {
 	MAIN.event("Ingreso pantalla domicilio", "ingreso_domicilio");
 
-	MAIN.getStatus( (user) => {
-		let ocr = {};
-		try{ ocr = JSON.parse(user.json_ocr_frente); }catch(ex){}
-
-		$(`[name="calle"]`).val(user.calle || ocr?.ocr?.calle_numero);
-		$(`[name="codigo_postal"]`).val(user.codigo_postal || ocr?.ocr?.codigo_postal);
-	});
-
-	window.myApp.picker({
-		toolbarCloseText: "Aceptar",
-		input: '.page[data-page=domicilio] #picker-colonia',
-		cols: [{
-  			textAlign: 'center',
-  			values: ['Colonia 1', 'Colonia 2', 'Colonia 3', 'Colonia 4']
-		}]
-	});
-
-	window.myApp.picker({
+	let pickerEstado = window.myApp.picker({
 		toolbarCloseText: "Aceptar",
 		input: '.page[data-page=domicilio] #picker-estado',
 		cols: [{
   			textAlign: 'center',
-  			values: ['Aguascalientes', 'Baja California', 'Baja California Sur', 'Campeche', 'Chiapas', 'Chihuahua', 'Ciudad de México', 'Coahuila', 'Colima', 'Durango', 'Guanajuato', 'Guerrero', 'Hidalgo', 'Jalisco', 'México', 'Michoacán', 'Morelos', 'Nayarit', 'Nuevo León', 'Oaxaca', 'Puebla', 'Querétaro', 'Quintana Roo', 'San Luis Potosí', 'Sinaloa', 'Sonora', 'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán', 'Zacatecas']
+  			values: Object.values(CATALOGO_ESTADO)
 		}]
 	});
 
-	window.myApp.picker({
-		toolbarCloseText: "Aceptar",
-		input: '.page[data-page=domicilio] #picker-municipio',
-		cols: [{
-  			textAlign: 'center',
-  			values: ['Municipio 1', 'Municipio 2', 'Municipio 3', 'Municipio 4']
-		}]
+	MAIN.getStatus( (user) => {
+		let ocr = {};
+		try{ ocr = JSON.parse(user.json_ocr_frente).ocr;}catch(ex){}
+
+		let calle_numero = ocr?.calle_numero || "",
+			numero = calle_numero.match(/\d+(?=\D*$)/, "")?.[0] || "",
+			calle = calle_numero.replace(numero, ""),
+			estado_code = ocr?.curp ? ocr?.curp.substring(11,13) : "";
+
+		if(user.estado) pickerEstado.setValue([user.estado], 0)
+		else if(CATALOGO_ESTADO[estado_code]) pickerEstado.setValue([CATALOGO_ESTADO[estado_code]], 0);
+
+		$(`[name="calle"]`).val(user.calle || calle);
+		$(`[name="numero_exterior"]`).val(user.numero_exterior || numero);
+		$(`[name="numero_interior"]`).val(user.numero_interior);
+		$(`[name="codigo_postal"]`).val(user.codigo_postal || ocr?.codigo_postal);
+		$(`[name="colonia"]`).val(user.colonia || ocr?.colonia);
+		$(`[name="municipio"]`).val(user.municipio || ocr?.municipio);
 	});
 
 	$(".page[data-page=domicilio] #form").validate({
@@ -342,6 +352,11 @@ myApp.onPageInit('autorizacion', function(page) {
 		$(`.phone-number`).html(`+52 ${user.numero}`);
 	});
 
+	$(`.page[data-page=autorizacion] [name="condiciones"]`).on("click", function(){
+		if(this.checked) $(`button`).removeAttr("disabled");
+		else $(`button`).attr('disabled', 'true');
+	});
+
 	$(".page[data-page=autorizacion] #form").validate({
 		rules: {
 			condiciones: { required: true}
@@ -368,13 +383,19 @@ myApp.onPageInit('autorizacion', function(page) {
 myApp.onPageInit('autorizacion-validacion', function(page) {
 	MAIN.event("Ingreso pantalla autorización validación", "ingreso_autorizacion_validacion");
 
+	$(`.page[data-page=autorizacion-validacion] [name="codigo"]`).on("keyup", function(){
+		let length = $(this).val().length;
+		if(length > 0) $(`#form .button-submit`).removeAttr("disabled");
+		else $(`#form .button-submit`).attr('disabled', 'true');
+	});
+
 	MAIN.getStatus( (user) => {
 		$(`.phone-number`).html(`+52 ${user.numero}`);
 	});
 
 	$(".page[data-page=autorizacion-validacion] #form").validate({
 		rules: {
-			nip: { required: true}
+			codigo: { required: true}
 		},
     	errorElement : 'span',
 		errorPlacement: function(error, element) {
@@ -393,6 +414,14 @@ myApp.onPageInit('autorizacion-validacion', function(page) {
 });
 
 myApp.onPageInit('usuario-registrado', function(page) {
+	MAIN.getStatus( (user) => {
+		$(`.folio`).html(`[${(user.curp || "").substring(0,10)}]`);
+
+		localStorage.removeItem("uuid");
+		localStorage.removeItem("base64_frente");
+		localStorage.removeItem("base64_reverso");
+	});
+
 	myApp.swiper('.page[data-page=usuario-registrado] .slider-hero .swiper-container', {
 		autoplay: 10000,
 		loop: true,

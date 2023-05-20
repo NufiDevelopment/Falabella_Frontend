@@ -37,7 +37,7 @@ myApp.onPageInit('informacion-personal', function(page) {
 		$("#form").submit();
 	});
 
-	$(`.page[data-page=informacion-personal] [name="terminos"]`).on("click", function(){
+	$(`.page[data-page=informacion-personal] [name="terminos"]`).on("change", function(){
 		if(this.checked) $(`button`).removeAttr("disabled");
 		else $(`button`).attr('disabled', 'true');
 	});
@@ -352,7 +352,7 @@ myApp.onPageInit('autorizacion', function(page) {
 		$(`.phone-number`).html(`+52 ${user.numero}`);
 	});
 
-	$(`.page[data-page=autorizacion] [name="condiciones"]`).on("click", function(){
+	$(`.page[data-page=autorizacion] [name="condiciones"]`).on("change", function(){
 		if(this.checked) $(`button`).removeAttr("disabled");
 		else $(`button`).attr('disabled', 'true');
 	});

@@ -118,7 +118,8 @@ myApp.onPageInit('credencial-frente-validar', function(page) {
 	$(".page[data-page=credencial-frente-validar] .confirmar").on("click", function(){
 		MAIN.POST(`${API_URL}registro/ocr_frente`, {base64}, function(res){
 			if(res.status != "success") return MAIN.showMessage("error", res.message);
-			MAIN.showView("credencial_reverso");
+			//MAIN.showView("credencial_reverso");
+			MAIN.showView("informacion_personal_full");
 		});
 	});
 });
@@ -418,8 +419,7 @@ myApp.onPageInit('usuario-registrado', function(page) {
 		$(`.folio`).html(`[${(user.curp || "").substring(0,10)}]`);
 
 		localStorage.removeItem("uuid");
-		localStorage.removeItem("base64_frente");
-		localStorage.removeItem("base64_reverso");
+		localStorage.removeItem("base64_frente");	
 	});
 
 	myApp.swiper('.page[data-page=usuario-registrado] .slider-hero .swiper-container', {

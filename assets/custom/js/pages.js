@@ -57,7 +57,13 @@ myApp.onPageInit('informacion-personal', function(page) {
 			let data = $(form).serialize();
 
 			MAIN.POST(`${API_URL}registro/crear`, data, function(res){
-				if(res.status != "success") return MAIN.showMessage("error", res.message);
+				if(res.status != "success") {
+					if(typeof res.data.telefonoValido !== "undefined" && res.data.telefonoValido == false)
+						MAIN.showView("numero_registrado");
+					else
+						return MAIN.showMessage("error", res.message);
+				}			
+					
 				localStorage.setItem("uuid", res.data.uuid);
 
 				MAIN.event("Salio pantalla informacion personal", "salio_informacion_personal");
@@ -75,7 +81,7 @@ myApp.onPageInit('credencial-frente', function(page) {
 	let base64 = localStorage.getItem("base64_frente");
 	if(base64){
 		$("img.credencial").attr("src", base64);
-		$(".continuar").removeAttr("disabled");
+		// $(".continuar").removeAttr("disabled");
 	}
 
 	$(".page[data-page=credencial-frente] .button-file").click(function(){
@@ -91,13 +97,18 @@ myApp.onPageInit('credencial-frente', function(page) {
 				if(err) return MAIN.showMessage("error", "Error al obtener imagen");
 				localStorage.setItem("base64_frente", base64);
 				$("img.credencial").attr("src", base64);
-				$(".continuar").removeAttr("disabled");
+				// $(".continuar").removeAttr("disabled");
+				MAIN.showView("credencial_frente_validar");
 			});
 	});
 
 	$(".page[data-page=credencial-frente] .continuar").on("click", function(){
+
+		MAIN.event("Click en botón cargar credencial", "cargar_credencial_frente");
+		$(`[name="credencial_frente"]`).click();
+
 		MAIN.event("Salio pantalla credencial frente", "salio_credencial_frente");
-		MAIN.showView("credencial_frente_validar");
+		
 	});
 });
 
@@ -117,7 +128,7 @@ myApp.onPageInit('credencial-frente-validar', function(page) {
 
 	$(".page[data-page=credencial-frente-validar] .confirmar").on("click", function(){
 		MAIN.POST(`${API_URL}registro/ocr_frente`, {base64}, function(res){
-			if(res.status != "success") return MAIN.showMessage("error", res.message);
+			if(res.status != "success") MAIN.showView("procesar_foto_error");
 			//MAIN.showView("credencial_reverso");
 			MAIN.showView("informacion_personal_full");
 		});
@@ -174,7 +185,7 @@ myApp.onPageInit('credencial-reverso-validar', function(page) {
 
 	$(".page[data-page=credencial-reverso-validar] .confirmar").on("click", function(){
 		MAIN.POST(`${API_URL}registro/ocr_reverso`, {base64}, function(res){
-			if(res.status != "success") return MAIN.showMessage("error", res.message);
+			if(res.status != "success") MAIN.showView("informacion_personal_full");
 			MAIN.showView("informacion_personal_full");
 		});
 	});
@@ -212,7 +223,7 @@ myApp.onPageInit('informacion-personal-full', function(page) {
 		let json = {};
 		try{ json = JSON.parse(user.json_ocr_frente); }catch(ex){}
 
-		let fecha_nacimiento = moment(json?.ocr?.fecha_nacimiento, "DD/MM/YYYY"),
+		let fecha_nacimiento = moment(json?.ocr?.fecha_nacimiento, "DD/MM/YYYY").add(1, 'days'),
 			sexo = json?.ocr?.sexo == "HOMBRE" ? "H" : (json?.ocr?.sexo == "MUJER" ? "M" : ""),
 			estado_code = json?.ocr?.curp ? json?.ocr?.curp.substring(11,13) : "";
 
@@ -280,9 +291,18 @@ myApp.onPageInit('validar-datos', function(page) {
 			let data = $(form).serialize();
 			
 			MAIN.POST(`${API_URL}registro/curp_rfc`, data, function(res){
-				if(res.status != "success") return MAIN.showMessage("error", res.message);
-				MAIN.event("Salio pantalla validar datos", "salio_validar_datos");
-				MAIN.showView("domicilio");
+
+
+				if(res.status != "success") {
+					if(typeof res.data.curpValido !== "undefined" && res.data.curpValido == false)
+						MAIN.showView("curp_registrado");
+					else
+						return MAIN.showMessage("error", res.message);
+				}
+				else{
+					MAIN.event("Salio pantalla validar datos", "salio_validar_datos");
+					MAIN.showView("domicilio");
+				}
 			});
 		}
 	});
@@ -427,5 +447,11 @@ myApp.onPageInit('usuario-registrado', function(page) {
 		loop: true,
 		pagination: '.swiper-pagination',
 		paginationClickable: true
+	});
+});
+
+myApp.onPageInit('procesar-foto-error', function(page) {
+	$(".page[data-page=procesar-foto-error] .continuar").on("click", function(){
+		MAIN.showView("informacion_personal_full");
 	});
 });

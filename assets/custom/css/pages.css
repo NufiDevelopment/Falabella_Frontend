@@ -8,7 +8,7 @@ body {
   background-color: #fdfbfb;
   font-size: 12px;
 	display: block;
-  max-width: 400px;
+  max-width: auto;
   margin: 0px auto;  
 }
 
@@ -421,6 +421,11 @@ background: #FFF;
 background: #FFF;
 }
 
+.page[data-page=autorizacion] .color-green-fala{
+	padding: 10px;
+	display: block !important;
+}
+
 /*
 |------------------------------------------------------------------------------
 | Usuario Registrado
@@ -473,8 +478,8 @@ background: #FFF;
 */
 
 .page[data-page=numero-registrado] .img{
-	display: block;
-	width: 90%;
+	display: inline;
+	width: 70%;
 }
 
 /*
@@ -483,8 +488,8 @@ background: #FFF;
 |------------------------------------------------------------------------------
 */
 .page[data-page=procesar-foto-error] .img{
-	display: block;
-	width: 100%;
+	display: inline;
+	width: 70%;
 }
 
 /*
@@ -494,8 +499,8 @@ background: #FFF;
 */
 
 .page[data-page=procesar-datos-error] .img{
-	display: block;
-	width: 100%;
+	display: inline;
+	width: 70%;
 }
 
 /*

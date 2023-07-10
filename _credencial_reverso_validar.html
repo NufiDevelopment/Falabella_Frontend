@@ -1,0 +1,50 @@
+<div data-page="credencial-reverso-validar" class="page">
+	<div class="header">
+		<img class="logo" src="./assets/images/logo.png">
+		<a class="button-back-header color-blue button-back">
+			<i class="fa fa-angle-left"></i>
+			<span class="color-green-fala">Regresar</span>
+		</a>
+	</div>
+
+  	<div class="page-content">
+  		<div class="content">
+	  		<input name="credencial_frente" type="file" accept="image/*" class="hidden">
+	  		<img class="credencial" src="assets/images/card.png">
+	  		<h2>Favor de validar:</h2>
+
+	  		<div class="list-block no-hairlines no-hairlines-between">
+				<ul>
+					<li>
+						<label class="label-checkbox item-content">
+							<input type="checkbox" name="checkbox" value="detalles"/>
+							<span class="item-media">
+								<i class="icon icon-form-checkbox"></i>
+							</span>
+							<span class="item-inner">
+								<span class="item-title">¿Puedes leer los datalles?</span>
+							</span>
+						</label>
+					</li>
+					<li>
+						<label class="label-checkbox item-content">
+							<input type="checkbox" name="checkbox" value="completa" />
+							<span class="item-media">
+								<i class="icon icon-form-checkbox"></i>
+							</span>
+							<span class="item-inner">
+								<span class="item-title">¿Puedes ver la identificación completa?</span>
+							</span>
+						</label>
+					</li>
+				</ul>
+			</div>
+  			<br>
+  			<br>
+  			<br>
+
+			<a class="button button-fill button-raised color-black confirmar" disabled>CONFIRMAR</a>
+			<a class="button button-fill button-raised color-black button-back">VOLVER A TOMAR FOTO</a>
+  		</div>
+	</div>
+</div>

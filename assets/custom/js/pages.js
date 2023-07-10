@@ -35,7 +35,7 @@ myApp.onPageInit('inicio', function(page) {
 
 myApp.onPageInit('informacion-personal', function(page) {
 
-	gtag('event', 'Paso_1_boton_Continuar', {'action': 'Clic', 'event_label': 'Paso_1_boton_Continuar'});
+	dataLayer.push({'event_label': 'Paso_1_boton_Continuar'});	
 
 	$(".page[data-page=informacion-personal] button").on("click", function(){
 		let option = $(this).data("option");
@@ -75,11 +75,12 @@ myApp.onPageInit('informacion-personal', function(page) {
 				MAIN.event("Salio pantalla informacion personal", "salio_informacion_personal");
 				if(window.option == "continuar_ine") 
 				{
-					gtag('event', 'Paso_2_boton_Continuar_con_INE', {'action': 'Clic', 'event_label': 'Paso_2_boton_Continuar_con_INE'});
+					dataLayer.push({'event_label': 'Paso_2_boton_Continuar_con_INE'});
+
 					MAIN.showView("credencial_frente");
 				}
 				else{ 
-					gtag('event', 'Paso_2_boton_Continuar_sin_INE', {'action': 'Clic', 'event_label': 'Paso_2_boton_Continuar_sin_INE'});
+					dataLayer.push({'event_label': 'Paso_2_boton_Continuar_sin_INE'});					
 					MAIN.showView("informacion_personal_full");
 				}
 			});
@@ -456,16 +457,34 @@ myApp.onPageInit('usuario-registrado', function(page) {
 		localStorage.removeItem("base64_frente");	
 	});
 
-	myApp.swiper('.page[data-page=usuario-registrado] .slider-hero .swiper-container', {
-		autoplay: 10000,
-		loop: true,
-		pagination: '.swiper-pagination',
-		paginationClickable: true
+	$(".page[data-page=usuario-registrado] .falabella").on("click", function(){
+		location.href = 'https://www.falabella.com.mx/';
 	});
+
+	
+
 });
 
 myApp.onPageInit('procesar-foto-error', function(page) {
 	$(".page[data-page=procesar-foto-error] .continuar").on("click", function(){
 		MAIN.showView("informacion_personal_full");
+	});
+});
+
+myApp.onPageInit('numero-registrado', function(page){
+	$(".page[data-page=numero-registrado] .falabella").on("click", function(){
+		location.href = 'https://www.falabella.com.mx/';
+	});
+});
+
+myApp.onPageInit('procesar-datos', function(page){
+	$(".page[data-page=procesar-datos] .falabella").on("click", function(){
+		location.href = 'https://www.falabella.com.mx/';
+	});
+});
+
+myApp.onPageInit('curp-registrado', function(page){
+	$(".page[data-page=curp-registrado] .falabella").on("click", function(){
+		location.href = 'https://www.falabella.com.mx/';
 	});
 });

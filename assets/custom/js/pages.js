@@ -21,7 +21,10 @@ myApp.onPageInit('splash-screen', function(page) {
 myApp.onPageInit('inicio', function(page) {
 	localStorage.removeItem("uuid");
 	localStorage.removeItem("base64_frente");
-	localStorage.removeItem("base64_reverso");
+	// localStorage.removeItem("base64_reverso");
+
+	
+
 });
 
 /*
@@ -31,6 +34,9 @@ myApp.onPageInit('inicio', function(page) {
 */
 
 myApp.onPageInit('informacion-personal', function(page) {
+
+	gtag('event', 'Paso_1_boton_Continuar', {'action': 'Clic', 'event_label': 'Paso_1_boton_Continuar'});
+
 	$(".page[data-page=informacion-personal] button").on("click", function(){
 		let option = $(this).data("option");
 		window.option = option;		
@@ -45,7 +51,7 @@ myApp.onPageInit('informacion-personal', function(page) {
 	$(".page[data-page=informacion-personal] #form").validate({
 		rules: {
 			numero: { required: true, is_phone: true},
-			correo: { required: true, is_email: true}
+			correo: { is_email: true}
 		},
     	errorElement : 'span',
 		errorPlacement: function(error, element) {
@@ -67,8 +73,15 @@ myApp.onPageInit('informacion-personal', function(page) {
 				localStorage.setItem("uuid", res.data.uuid);
 
 				MAIN.event("Salio pantalla informacion personal", "salio_informacion_personal");
-				if(window.option == "continuar_ine") MAIN.showView("credencial_frente");
-				else MAIN.showView("informacion_personal_full");
+				if(window.option == "continuar_ine") 
+				{
+					gtag('event', 'Paso_2_boton_Continuar_con_INE', {'action': 'Clic', 'event_label': 'Paso_2_boton_Continuar_con_INE'});
+					MAIN.showView("credencial_frente");
+				}
+				else{ 
+					gtag('event', 'Paso_2_boton_Continuar_sin_INE', {'action': 'Clic', 'event_label': 'Paso_2_boton_Continuar_sin_INE'});
+					MAIN.showView("informacion_personal_full");
+				}
 			});
 		}
 	});
@@ -76,6 +89,7 @@ myApp.onPageInit('informacion-personal', function(page) {
 
 myApp.onPageInit('credencial-frente', function(page) {
 	MAIN.event("Ingreso pantalla credencial frente", "ingreso_credencial_frente");
+	
 
 	//Si ya existe la imagen: mostrarla
 	let base64 = localStorage.getItem("base64_frente");
@@ -136,60 +150,60 @@ myApp.onPageInit('credencial-frente-validar', function(page) {
 });
 
 
-myApp.onPageInit('credencial-reverso', function(page) {
-	MAIN.event("Ingreso a pantalla credencial reverso", "ingreso_credencial_reverso");
+// myApp.onPageInit('credencial-reverso', function(page) {
+// 	MAIN.event("Ingreso a pantalla credencial reverso", "ingreso_credencial_reverso");
 
-	//Si ya existe la imagen: mostrarla
-	let base64 = localStorage.getItem("base64_reverso");
-	if(base64){
-		$("img.credencial").attr("src", base64);
-		$(".continuar").removeAttr("disabled");
-	}
+// 	//Si ya existe la imagen: mostrarla
+// 	let base64 = localStorage.getItem("base64_reverso");
+// 	if(base64){
+// 		$("img.credencial").attr("src", base64);
+// 		$(".continuar").removeAttr("disabled");
+// 	}
 
-	$(".page[data-page=credencial-reverso] .button-file").click(function(){
-		MAIN.event("Click en botón cargar credencial", "cargar_credencial_reverso");
-		$(`[name="credencial_reverso"]`).click();
-	});
+// 	$(".page[data-page=credencial-reverso] .button-file").click(function(){
+// 		MAIN.event("Click en botón cargar credencial", "cargar_credencial_reverso");
+// 		$(`[name="credencial_reverso"]`).click();
+// 	});
 
-	$(`.page[data-page=credencial-reverso] [name="credencial_reverso"]`).on("change", function(){
-		let file = $(`[name="credencial_reverso"]`)?.[0]?.files?.[0] || null;
+// 	$(`.page[data-page=credencial-reverso] [name="credencial_reverso"]`).on("change", function(){
+// 		let file = $(`[name="credencial_reverso"]`)?.[0]?.files?.[0] || null;
 
-		if(file)
-			MAIN.getBase64(file, function(err, base64) {
-				if(err) return MAIN.showMessage("error", "Error al obtener imagen");
-				localStorage.setItem("base64_reverso", base64);
-				$("img.credencial").attr("src", base64);
-				$(".continuar").removeAttr("disabled");
-			});
-	});
+// 		if(file)
+// 			MAIN.getBase64(file, function(err, base64) {
+// 				if(err) return MAIN.showMessage("error", "Error al obtener imagen");
+// 				localStorage.setItem("base64_reverso", base64);
+// 				$("img.credencial").attr("src", base64);
+// 				$(".continuar").removeAttr("disabled");
+// 			});
+// 	});
 
-	$(".page[data-page=credencial-reverso] .continuar").on("click", function(){
-		MAIN.event("Salio pantalla credencial reverso", "salio_credencial_reverso");
-		MAIN.showView("credencial_reverso_validar");
-	});
-});
+// 	$(".page[data-page=credencial-reverso] .continuar").on("click", function(){
+// 		MAIN.event("Salio pantalla credencial reverso", "salio_credencial_reverso");
+// 		MAIN.showView("credencial_reverso_validar");
+// 	});
+// });
 
-myApp.onPageInit('credencial-reverso-validar', function(page) {
-	MAIN.event("Ingreso pantalla credencial reverso validar", "ingreso_credencial_reverso_validar");
+// myApp.onPageInit('credencial-reverso-validar', function(page) {
+// 	MAIN.event("Ingreso pantalla credencial reverso validar", "ingreso_credencial_reverso_validar");
 
-	let base64 = localStorage.getItem("base64_reverso");
-	if(base64) $("img.credencial").attr("src", base64);
+// 	let base64 = localStorage.getItem("base64_reverso");
+// 	if(base64) $("img.credencial").attr("src", base64);
 
-	$(`.page[data-page=credencial-reverso-validar] input[type="checkbox"]`).on("change", function(){
-		let total_checkbox = $(`input[type="checkbox"]`).length,
-			checked = $(`input[type="checkbox"]:checked`).length;
+// 	$(`.page[data-page=credencial-reverso-validar] input[type="checkbox"]`).on("change", function(){
+// 		let total_checkbox = $(`input[type="checkbox"]`).length,
+// 			checked = $(`input[type="checkbox"]:checked`).length;
 
-		if(total_checkbox == checked) $(".confirmar").removeAttr('disabled');
-		else $(".confirmar").attr('disabled', 'true');
-	});
+// 		if(total_checkbox == checked) $(".confirmar").removeAttr('disabled');
+// 		else $(".confirmar").attr('disabled', 'true');
+// 	});
 
-	$(".page[data-page=credencial-reverso-validar] .confirmar").on("click", function(){
-		MAIN.POST(`${API_URL}registro/ocr_reverso`, {base64}, function(res){
-			if(res.status != "success") MAIN.showView("informacion_personal_full");
-			MAIN.showView("informacion_personal_full");
-		});
-	});
-});
+// 	$(".page[data-page=credencial-reverso-validar] .confirmar").on("click", function(){
+// 		MAIN.POST(`${API_URL}registro/ocr_reverso`, {base64}, function(res){
+// 			if(res.status != "success") MAIN.showView("informacion_personal_full");
+// 			MAIN.showView("informacion_personal_full");
+// 		});
+// 	});
+// });
 
 myApp.onPageInit('informacion-personal-full', function(page) {
 	MAIN.event("Ingreso pantalla informacion personal full", "ingreso_informacion_personal_full");

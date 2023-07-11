@@ -34,8 +34,9 @@ myApp.onPageInit('inicio', function(page) {
 */
 
 myApp.onPageInit('informacion-personal', function(page) {
-
-	dataLayer.push({'Paso_1_boton_Continuar': 'Paso_1_boton_Continuar'});	
+	
+	gtag('event', 'Paso_1_boton_Continuar', {'Paso_1_boton_Continuar': 'Paso_1_boton_Continuar'});
+	// dataLayer.push({'Paso_1_boton_Continuar': 'Paso_1_boton_Continuar'});	
 
 	$(".page[data-page=informacion-personal] button").on("click", function(){
 		let option = $(this).data("option");
@@ -60,7 +61,21 @@ myApp.onPageInit('informacion-personal', function(page) {
 		submitHandler: function(form, e) {
 			e.preventDefault();
 			if(!$(`[name="terminos"]`).is(":checked")) return $(`<span class="error">Por favor acepte los terminos y condiciones</span>`).appendTo($(`input[name="terminos"]`).closest('.item-content'));
+
 			let data = $(form).serialize();
+
+			let data2 = new FormData(form);
+
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+
+			data+=  (urlParams.has('utm_source')) ? '&utm_source='+ urlParams.get('utm_source') : "";
+			data+=  (urlParams.has('utm_medium')) ? '&utm_medium='+ urlParams.get('utm_medium') : "";
+			data+=  (urlParams.has('utm_campaign')) ? '&utm_campaign='+ urlParams.get('utm_campaign') : "";
+			data+=  (urlParams.has('utm_term')) ? '&utm_term='+ urlParams.get('utm_term') : "";
+			data+=  (urlParams.has('utm_content')) ? '&utm_content='+ urlParams.get('utm_content') : "";
+
+
 
 			MAIN.POST(`${API_URL}registro/crear`, data, function(res){
 				if(res.status != "success") {
@@ -75,12 +90,14 @@ myApp.onPageInit('informacion-personal', function(page) {
 				MAIN.event("Salio pantalla informacion personal", "salio_informacion_personal");
 				if(window.option == "continuar_ine") 
 				{
-					dataLayer.push({'Paso_2_boton_Continuar_con_INE': 'Paso_2_boton_Continuar_con_INE'});
+					gtag('event', 'Paso_2_boton_Continuar_con_INE', {'Paso_2_boton_Continuar_con_INE': 'Paso_2_boton_Continuar_con_INE'});
+					// dataLayer.push({'Paso_2_boton_Continuar_con_INE': 'Paso_2_boton_Continuar_con_INE'});
 
 					MAIN.showView("credencial_frente");
 				}
 				else{ 
-					dataLayer.push({'Paso_2_boton_Continuar_sin_INE': 'Paso_2_boton_Continuar_sin_INE'});					
+					gtag('event', 'Paso_2_boton_Continuar_sin_INE', {'Paso_2_boton_Continuar_sin_INE': 'Paso_2_boton_Continuar_sin_INE'});
+					// dataLayer.push({'Paso_2_boton_Continuar_sin_INE': 'Paso_2_boton_Continuar_sin_INE'});					
 					MAIN.showView("informacion_personal_full");
 				}
 			});
@@ -238,12 +255,12 @@ myApp.onPageInit('informacion-personal-full', function(page) {
 		let json = {};
 		try{ json = JSON.parse(user.json_ocr_frente); }catch(ex){}
 
-		let fecha_nacimiento = moment(json?.ocr?.fecha_nacimiento, "DD/MM/YYYY").add(1, 'days'),
+		let fecha_nacimiento = moment(json?.ocr?.fecha_nacimiento, "DD/MM/YYYY"), //.add(1, 'days'),
 			sexo = json?.ocr?.sexo == "HOMBRE" ? "H" : (json?.ocr?.sexo == "MUJER" ? "M" : ""),
 			estado_code = json?.ocr?.curp ? json?.ocr?.curp.substring(11,13) : "";
 
-		if(user.fecha_nacimiento) calendarCustomDateFormat.setValue([fecha_nacimiento]);
-		else if(fecha_nacimiento.isValid()) calendarCustomDateFormat.setValue([fecha_nacimiento.format("YYYY-MM-DD")]);
+		if(user.fecha_nacimiento) calendarCustomDateFormat.setValue([fecha_nacimiento.toDate()]);
+		else if(fecha_nacimiento.isValid()) calendarCustomDateFormat.setValue([fecha_nacimiento.toDate()]); // .format("YYYY-MM-DD")
 		
 		if(user.sexo) pickerSexo.setValue([user.sexo], 0);
 		else if(CATALOGO_SEXO[sexo]) pickerSexo.setValue([CATALOGO_SEXO[sexo]], 0);
@@ -312,7 +329,8 @@ myApp.onPageInit('validar-datos', function(page) {
 					if(res.data!= null && typeof res.data.curpValido !== "undefined" && res.data.curpValido == false)
 						MAIN.showView("curp_registrado");
 					else
-						return MAIN.showMessage("error", res.message);
+						MAIN.showView("procesar_datos_error");
+					// return MAIN.showMessage("error", res.message);
 				}
 				else{
 					MAIN.event("Salio pantalla validar datos", "salio_validar_datos");

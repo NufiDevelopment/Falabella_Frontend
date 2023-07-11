@@ -35,7 +35,7 @@ myApp.onPageInit('inicio', function(page) {
 
 myApp.onPageInit('informacion-personal', function(page) {
 
-	dataLayer.push({'event_label': 'Paso_1_boton_Continuar'});	
+	dataLayer.push({'Paso_1_boton_Continuar': 'Paso_1_boton_Continuar'});	
 
 	$(".page[data-page=informacion-personal] button").on("click", function(){
 		let option = $(this).data("option");
@@ -64,7 +64,7 @@ myApp.onPageInit('informacion-personal', function(page) {
 
 			MAIN.POST(`${API_URL}registro/crear`, data, function(res){
 				if(res.status != "success") {
-					if(typeof res.data.telefonoValido !== "undefined" && res.data.telefonoValido == false)
+					if(res.data != null && typeof res.data.telefonoValido !== "undefined" && res.data.telefonoValido == false)
 						MAIN.showView("numero_registrado");
 					else
 						return MAIN.showMessage("error", res.message);
@@ -75,12 +75,12 @@ myApp.onPageInit('informacion-personal', function(page) {
 				MAIN.event("Salio pantalla informacion personal", "salio_informacion_personal");
 				if(window.option == "continuar_ine") 
 				{
-					dataLayer.push({'event_label': 'Paso_2_boton_Continuar_con_INE'});
+					dataLayer.push({'Paso_2_boton_Continuar_con_INE': 'Paso_2_boton_Continuar_con_INE'});
 
 					MAIN.showView("credencial_frente");
 				}
 				else{ 
-					dataLayer.push({'event_label': 'Paso_2_boton_Continuar_sin_INE'});					
+					dataLayer.push({'Paso_2_boton_Continuar_sin_INE': 'Paso_2_boton_Continuar_sin_INE'});					
 					MAIN.showView("informacion_personal_full");
 				}
 			});
@@ -309,7 +309,7 @@ myApp.onPageInit('validar-datos', function(page) {
 
 
 				if(res.status != "success") {
-					if(typeof res.data.curpValido !== "undefined" && res.data.curpValido == false)
+					if(res.data!= null && typeof res.data.curpValido !== "undefined" && res.data.curpValido == false)
 						MAIN.showView("curp_registrado");
 					else
 						return MAIN.showMessage("error", res.message);

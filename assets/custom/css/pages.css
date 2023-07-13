@@ -1,10 +1,15 @@
+@font-face {
+	font-family: 'PFBeauSansPro';
+	src: url('/assets/fonts/PFBeauSansPro-Regular.otf');
+}
+
 body {
-  font-family: 'Poppins';
+  font-family: 'PFBeauSansPro';
   background-color: #fdfbfb;
   font-size: 12px;
-	display: block;
-  max-width: 400px;
-  margin: 0px auto;
+  display: block;
+  max-width: auto;
+  margin: 0px auto;  
 }
 
 .preloader-indicator-overlay {
@@ -56,10 +61,29 @@ h2{
 	margin: 10px 0px;
 }
 
+.rcorners1 {
+	border-radius: 15px;
+	background: #43ab34;
+	color: #ffffff;
+	padding: 2px;
+	margin:10px auto;
+	width: 80%;
+  }
+
 
 .color-gray{
 	color: #8f8f8f;
 }
+
+.color-green-fala{	
+    color: #43ab34 !important;	
+}
+
+.backcolor-green-fala{
+	background: #43ab34;
+    color: #fff;	
+}
+
 
 .button-back-header{
 	cursor: pointer;
@@ -164,6 +188,27 @@ p{
 	margin: 0px;
 }
 
+.button.button-fill.color-green{
+	background: #43ab34 !important;
+	color: #fff;
+}
+
+.button.color-green:not(.button-fill){	
+	color: #72a553 !important;
+}
+
+.toolbar{
+	background-color: #43ab34 !important;
+}
+
+.picker-modal .picker-header{
+	background: #43ab34 !important;
+}
+
+.picker-calendar-day.picker-calendar-day-selected span{
+	background: #43ab34 !important;
+}
+
 /*
 |------------------------------------------------------------------------------
 | Splash
@@ -196,6 +241,7 @@ p{
 	max-width: 200px;
 	margin-bottom: 20px;
 }
+
 
 
 /*
@@ -234,7 +280,18 @@ p{
 |------------------------------------------------------------------------------
 */
 .page[data-page=informacion-personal] .label-switch{
-	padding: 10px;
+	padding: 10px;	
+}
+
+.page[data-page=informacion-personal] .label-switch .checkbox{	
+	background: #9dd39f;
+}
+
+.page[data-page=informacion-personal] .label-switch input[type=checkbox]:checked+.checkbox{
+	background: #43ab34;
+}
+.page[data-page=informacion-personal] .label-switch input[type=checkbox]:checked+.checkbox:after{
+background: #FFF;
 }
 .page[data-page=informacion-personal] .swith-div{
 	display: flex;
@@ -366,6 +423,21 @@ p{
   padding: 0px 10px;
 }
 
+.page[data-page=autorizacion] .label-switch .checkbox{	
+	background: #9dd39f;
+}
+
+.page[data-page=autorizacion] .label-switch input[type=checkbox]:checked+.checkbox{
+	background: #43ab34;
+}
+.page[data-page=autorizacion] .label-switch input[type=checkbox]:checked+.checkbox:after{
+background: #FFF;
+}
+
+.page[data-page=autorizacion] .color-green-fala{
+	padding: 10px;
+	display: block !important;
+}
 
 /*
 |------------------------------------------------------------------------------
@@ -404,4 +476,53 @@ p{
   font-weight: bold;
   font-size: 1.4em;
   margin-top: 8px;
+}
+
+.page[data-page=usuario-registrado] .img{
+	display: block;
+	width: 100%;
+}
+
+
+/*
+|------------------------------------------------------------------------------
+| Numero Registrado
+|------------------------------------------------------------------------------
+*/
+
+.page[data-page=numero-registrado] .img{
+	display: inline;
+	width: 70%;
+}
+
+/*
+|------------------------------------------------------------------------------
+| Procsar Foto Error
+|------------------------------------------------------------------------------
+*/
+.page[data-page=procesar-foto-error] .img{
+	display: inline;
+	width: 70%;
+}
+
+/*
+|------------------------------------------------------------------------------
+| Procsar Datos Error
+|------------------------------------------------------------------------------
+*/
+
+.page[data-page=procesar-datos-error] .img{
+	display: inline;
+	width: 70%;
+}
+
+/*
+|------------------------------------------------------------------------------
+| CURP registrado
+|------------------------------------------------------------------------------
+*/
+
+.page[data-page=curp-registrado] .img{
+	display: block;
+	width: 100%;
 }

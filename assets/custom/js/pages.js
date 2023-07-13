@@ -19,9 +19,15 @@ myApp.onPageInit('splash-screen', function(page) {
 */
 
 myApp.onPageInit('inicio', function(page) {
+
+	MAIN.setPage('inicio');
+
 	localStorage.removeItem("uuid");
 	localStorage.removeItem("base64_frente");
-	localStorage.removeItem("base64_reverso");
+	// localStorage.removeItem("base64_reverso");
+
+	
+
 });
 
 /*
@@ -31,6 +37,12 @@ myApp.onPageInit('inicio', function(page) {
 */
 
 myApp.onPageInit('informacion-personal', function(page) {
+	
+	MAIN.setPage('informacion_personal');
+	
+	gtag('event', 'Paso_1_boton_Continuar', {'Paso_1_boton_Continuar': 'Paso_1_boton_Continuar'});
+	// dataLayer.push({'Paso_1_boton_Continuar': 'Paso_1_boton_Continuar'});	
+
 	$(".page[data-page=informacion-personal] button").on("click", function(){
 		let option = $(this).data("option");
 		window.option = option;		
@@ -45,7 +57,7 @@ myApp.onPageInit('informacion-personal', function(page) {
 	$(".page[data-page=informacion-personal] #form").validate({
 		rules: {
 			numero: { required: true, is_phone: true},
-			correo: { required: true, is_email: true}
+			correo: { is_email: true}
 		},
     	errorElement : 'span',
 		errorPlacement: function(error, element) {
@@ -54,32 +66,62 @@ myApp.onPageInit('informacion-personal', function(page) {
 		submitHandler: function(form, e) {
 			e.preventDefault();
 			if(!$(`[name="terminos"]`).is(":checked")) return $(`<span class="error">Por favor acepte los terminos y condiciones</span>`).appendTo($(`input[name="terminos"]`).closest('.item-content'));
+
 			let data = $(form).serialize();
 
+			let data2 = new FormData(form);
+
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+
+			data+=  (urlParams.has('utm_source')) ? '&utm_source='+ urlParams.get('utm_source') : "";
+			data+=  (urlParams.has('utm_medium')) ? '&utm_medium='+ urlParams.get('utm_medium') : "";
+			data+=  (urlParams.has('utm_campaign')) ? '&utm_campaign='+ urlParams.get('utm_campaign') : "";
+			data+=  (urlParams.has('utm_term')) ? '&utm_term='+ urlParams.get('utm_term') : "";
+			data+=  (urlParams.has('utm_content')) ? '&utm_content='+ urlParams.get('utm_content') : "";
+
+
+
 			MAIN.POST(`${API_URL}registro/crear`, data, function(res){
-				if(res.status != "success") return MAIN.showMessage("error", res.message);
+				if(res.status != "success") {
+					if(res.data != null && typeof res.data.telefonoValido !== "undefined" && res.data.telefonoValido == false)
+						MAIN.showView("numero_registrado");
+					else
+						return MAIN.showMessage("error", res.message);
+				}			
+					
 				localStorage.setItem("uuid", res.data.uuid);
 
-				MAIN.event("Salio pantalla informacion personal", "salio_informacion_personal");
-				if(window.option == "continuar_ine") MAIN.showView("credencial_frente");
-				else MAIN.showView("informacion_personal_full");
+				
+				if(window.option == "continuar_ine") 
+				{
+					gtag('event', 'Paso_2_boton_Continuar_con_INE', {'Paso_2_boton_Continuar_con_INE': 'Paso_2_boton_Continuar_con_INE'});
+					// dataLayer.push({'Paso_2_boton_Continuar_con_INE': 'Paso_2_boton_Continuar_con_INE'});
+
+					MAIN.showView("credencial_frente");
+				}
+				else{ 
+					gtag('event', 'Paso_2_boton_Continuar_sin_INE', {'Paso_2_boton_Continuar_sin_INE': 'Paso_2_boton_Continuar_sin_INE'});
+					// dataLayer.push({'Paso_2_boton_Continuar_sin_INE': 'Paso_2_boton_Continuar_sin_INE'});					
+					MAIN.showView("informacion_personal_full");
+				}
 			});
 		}
 	});
 });
 
-myApp.onPageInit('credencial-frente', function(page) {
-	MAIN.event("Ingreso pantalla credencial frente", "ingreso_credencial_frente");
+myApp.onPageInit('credencial-frente', function(page) {	
+		
+	MAIN.setPage('credencial_frente');
 
 	//Si ya existe la imagen: mostrarla
 	let base64 = localStorage.getItem("base64_frente");
 	if(base64){
 		$("img.credencial").attr("src", base64);
-		$(".continuar").removeAttr("disabled");
+		// $(".continuar").removeAttr("disabled");
 	}
 
-	$(".page[data-page=credencial-frente] .button-file").click(function(){
-		MAIN.event("Click en botón cargar credencial", "cargar_credencial_frente");
+	$(".page[data-page=credencial-frente] .button-file").click(function(){		
 		$(`[name="credencial_frente"]`).click();
 	});
 
@@ -91,18 +133,25 @@ myApp.onPageInit('credencial-frente', function(page) {
 				if(err) return MAIN.showMessage("error", "Error al obtener imagen");
 				localStorage.setItem("base64_frente", base64);
 				$("img.credencial").attr("src", base64);
-				$(".continuar").removeAttr("disabled");
+				// $(".continuar").removeAttr("disabled");
+				MAIN.showView("credencial_frente_validar");
 			});
 	});
 
 	$(".page[data-page=credencial-frente] .continuar").on("click", function(){
-		MAIN.event("Salio pantalla credencial frente", "salio_credencial_frente");
-		MAIN.showView("credencial_frente_validar");
+
+		
+		$(`[name="credencial_frente"]`).click();
+		
+
+		gtag('event', 'Paso_3_boton_Continuar_foto_INE_frontal', {'Paso_3_boton_Continuar_foto_INE_frontal': 'Paso_3_boton_Continuar_foto_INE_frontal'});
+		
 	});
 });
 
-myApp.onPageInit('credencial-frente-validar', function(page) {
-	MAIN.event("Ingreso pantalla credencial frente validar", "ingreso_credencial_frente_validar");
+myApp.onPageInit('credencial-frente-validar', function(page) {	
+	
+	MAIN.setPage('credencial_frente_validar');
 
 	let base64 = localStorage.getItem("base64_frente");
 	if(base64) $("img.credencial").attr("src", base64);
@@ -117,70 +166,25 @@ myApp.onPageInit('credencial-frente-validar', function(page) {
 
 	$(".page[data-page=credencial-frente-validar] .confirmar").on("click", function(){
 		MAIN.POST(`${API_URL}registro/ocr_frente`, {base64}, function(res){
-			if(res.status != "success") return MAIN.showMessage("error", res.message);
-			MAIN.showView("credencial_reverso");
-		});
-	});
-});
-
-
-myApp.onPageInit('credencial-reverso', function(page) {
-	MAIN.event("Ingreso a pantalla credencial reverso", "ingreso_credencial_reverso");
-
-	//Si ya existe la imagen: mostrarla
-	let base64 = localStorage.getItem("base64_reverso");
-	if(base64){
-		$("img.credencial").attr("src", base64);
-		$(".continuar").removeAttr("disabled");
-	}
-
-	$(".page[data-page=credencial-reverso] .button-file").click(function(){
-		MAIN.event("Click en botón cargar credencial", "cargar_credencial_reverso");
-		$(`[name="credencial_reverso"]`).click();
-	});
-
-	$(`.page[data-page=credencial-reverso] [name="credencial_reverso"]`).on("change", function(){
-		let file = $(`[name="credencial_reverso"]`)?.[0]?.files?.[0] || null;
-
-		if(file)
-			MAIN.getBase64(file, function(err, base64) {
-				if(err) return MAIN.showMessage("error", "Error al obtener imagen");
-				localStorage.setItem("base64_reverso", base64);
-				$("img.credencial").attr("src", base64);
-				$(".continuar").removeAttr("disabled");
-			});
-	});
-
-	$(".page[data-page=credencial-reverso] .continuar").on("click", function(){
-		MAIN.event("Salio pantalla credencial reverso", "salio_credencial_reverso");
-		MAIN.showView("credencial_reverso_validar");
-	});
-});
-
-myApp.onPageInit('credencial-reverso-validar', function(page) {
-	MAIN.event("Ingreso pantalla credencial reverso validar", "ingreso_credencial_reverso_validar");
-
-	let base64 = localStorage.getItem("base64_reverso");
-	if(base64) $("img.credencial").attr("src", base64);
-
-	$(`.page[data-page=credencial-reverso-validar] input[type="checkbox"]`).on("change", function(){
-		let total_checkbox = $(`input[type="checkbox"]`).length,
-			checked = $(`input[type="checkbox"]:checked`).length;
-
-		if(total_checkbox == checked) $(".confirmar").removeAttr('disabled');
-		else $(".confirmar").attr('disabled', 'true');
-	});
-
-	$(".page[data-page=credencial-reverso-validar] .confirmar").on("click", function(){
-		MAIN.POST(`${API_URL}registro/ocr_reverso`, {base64}, function(res){
-			if(res.status != "success") return MAIN.showMessage("error", res.message);
+			if(res.status != "success") {
+				gtag('event', 'Paso_4_boton_sin_verificar_foto_INE', {'Paso_4_boton_sin_verificar_foto_INE': 'Paso_4_boton_sin_verificar_foto_INE'});
+				MAIN.showView("procesar_foto_error");
+			}
+			//MAIN.showView("credencial_reverso");
+			gtag('event', 'Paso_4_boton_Confirmar_foto_INE', {'Paso_4_boton_Confirmar_foto_INE': 'Paso_4_boton_Confirmar_foto_INE'});
 			MAIN.showView("informacion_personal_full");
+			
+			
 		});
 	});
 });
+
+
+
 
 myApp.onPageInit('informacion-personal-full', function(page) {
-	MAIN.event("Ingreso pantalla informacion personal full", "ingreso_informacion_personal_full");
+	
+	MAIN.setPage('informacion_personal_full');
 
 	var calendarCustomDateFormat = window.myApp.calendar({
 	    	dateFormat: 'dd/mm/yyyy',
@@ -211,12 +215,12 @@ myApp.onPageInit('informacion-personal-full', function(page) {
 		let json = {};
 		try{ json = JSON.parse(user.json_ocr_frente); }catch(ex){}
 
-		let fecha_nacimiento = moment(json?.ocr?.fecha_nacimiento, "DD/MM/YYYY"),
+		let fecha_nacimiento = moment(json?.ocr?.fecha_nacimiento, "DD/MM/YYYY"), //.add(1, 'days'),
 			sexo = json?.ocr?.sexo == "HOMBRE" ? "H" : (json?.ocr?.sexo == "MUJER" ? "M" : ""),
 			estado_code = json?.ocr?.curp ? json?.ocr?.curp.substring(11,13) : "";
 
-		if(user.fecha_nacimiento) calendarCustomDateFormat.setValue([fecha_nacimiento]);
-		else if(fecha_nacimiento.isValid()) calendarCustomDateFormat.setValue([fecha_nacimiento.format("YYYY-MM-DD")]);
+		if(user.fecha_nacimiento) calendarCustomDateFormat.setValue([fecha_nacimiento.toDate()]);
+		else if(fecha_nacimiento.isValid()) calendarCustomDateFormat.setValue([fecha_nacimiento.toDate()]); // .format("YYYY-MM-DD")
 		
 		if(user.sexo) pickerSexo.setValue([user.sexo], 0);
 		else if(CATALOGO_SEXO[sexo]) pickerSexo.setValue([CATALOGO_SEXO[sexo]], 0);
@@ -246,7 +250,11 @@ myApp.onPageInit('informacion-personal-full', function(page) {
 			let data = $(form).serialize();
 			
 			MAIN.POST(`${API_URL}registro/datos_personales`, data, function(res){
-				if(res.status != "success") return MAIN.showMessage("error", res.message);
+				if(res.status != "success") {
+					return MAIN.showMessage("error", res.message);
+				}
+				
+				gtag('event', 'Paso_5_boton_Confirmar_datos_personales', {'Paso_5_boton_Confirmar_datos_personales': 'Paso_5_boton_Confirmar_datos_personales'});
 				MAIN.showView("validar_datos");
 			});
 		}
@@ -255,7 +263,8 @@ myApp.onPageInit('informacion-personal-full', function(page) {
 
 
 myApp.onPageInit('validar-datos', function(page) {
-	MAIN.event("Ingreso pantalla validar datos", "ingreso_validar_datos");
+	
+	MAIN.setPage('validar_datos');
 
 	MAIN.getStatus( (user) => {
 		let json_curp = {}, json_rfc = {};
@@ -279,16 +288,33 @@ myApp.onPageInit('validar-datos', function(page) {
 			let data = $(form).serialize();
 			
 			MAIN.POST(`${API_URL}registro/curp_rfc`, data, function(res){
-				if(res.status != "success") return MAIN.showMessage("error", res.message);
-				MAIN.event("Salio pantalla validar datos", "salio_validar_datos");
-				MAIN.showView("domicilio");
+
+
+				if(res.status != "success") {
+					if(res.data!= null && typeof res.data.curpValido !== "undefined" && res.data.curpValido == false){
+						gtag('event', 'Paso_7_CURP_RFC_duplicado', {'Paso_7_CURP_RFC_duplicado': 'Paso_7_CURP_RFC_duplicado'});
+						MAIN.showView("curp_registrado");
+					}						
+					else{
+						gtag('event', 'Paso_7_CURP_RFC_sin_verificar', {'Paso_7_CURP_RFC_sin_verificar': 'Paso_7_CURP_RFC_sin_verificar'});
+						MAIN.showView("procesar_datos_error");
+					}
+					// return MAIN.showMessage("error", res.message);
+				}
+				else{					
+
+					gtag('event', 'Paso_6_boton_Confirmar_CURP_RFC', {'Paso_6_boton_Confirmar_CURP_RFC': 'Paso_6_boton_Confirmar_CURP_RFC'});
+
+					MAIN.showView("domicilio");
+				}
 			});
 		}
 	});
 });
 
 myApp.onPageInit('domicilio', function(page) {
-	MAIN.event("Ingreso pantalla domicilio", "ingreso_domicilio");
+	
+	MAIN.setPage('domicilio');
 
 	let pickerEstado = window.myApp.picker({
 		toolbarCloseText: "Aceptar",
@@ -336,8 +362,12 @@ myApp.onPageInit('domicilio', function(page) {
 			let data = $(form).serialize();
 
 			MAIN.POST(`${API_URL}registro/domicilio`, data, function(res){
-				if(res.status != "success") return MAIN.showMessage("error", res.message);
-				MAIN.event("Salio pantalla domicilio", "salio_domicilio");
+				if(res.status != "success") {
+					return MAIN.showMessage("error", res.message);
+				}
+				
+				
+				gtag('event', 'Paso_5_boton_Confirmar_datos_demograficos', {'Paso_5_boton_Confirmar_datos_demograficos': 'Paso_5_boton_Confirmar_datos_demograficos'});
 				MAIN.showView("autorizacion");
 			});
 		}
@@ -346,7 +376,8 @@ myApp.onPageInit('domicilio', function(page) {
 
 
 myApp.onPageInit('autorizacion', function(page) {
-	MAIN.event("Ingreso pantalla autorización", "ingreso_autorizacion");
+	
+	MAIN.setPage('autorizacion');
 
 	MAIN.getStatus( (user) => {
 		$(`.phone-number`).html(`+52 ${user.numero}`);
@@ -371,8 +402,13 @@ myApp.onPageInit('autorizacion', function(page) {
 			let data = $(form).serialize();
 			
 			MAIN.POST(`${API_URL}registro/enviar_otp`, data, function(res){
-				if(res.status != "success") return MAIN.showMessage("error", res.message);
-				MAIN.event("Salio pantalla autorización", "salio_autorizacion");
+				if(res.status != "success"){
+					return MAIN.showMessage("error", res.message);
+				}
+				
+
+				gtag('event', 'Paso_8_enviar_codigo', {'Paso_8_enviar_codigo': 'Paso_8_enviar_codigo'});
+
 				MAIN.showView("autorizacion_validacion");
 			});
 		}
@@ -380,8 +416,9 @@ myApp.onPageInit('autorizacion', function(page) {
 });
 
 
-myApp.onPageInit('autorizacion-validacion', function(page) {
-	MAIN.event("Ingreso pantalla autorización validación", "ingreso_autorizacion_validacion");
+myApp.onPageInit('autorizacion-validacion', function(page) {	
+
+	MAIN.setPage('autorizacion_validacion');
 
 	$(`.page[data-page=autorizacion-validacion] [name="codigo"]`).on("keyup", function(){
 		let length = $(this).val().length;
@@ -405,8 +442,12 @@ myApp.onPageInit('autorizacion-validacion', function(page) {
 			let data = $(form).serialize();
 			
 			MAIN.POST(`${API_URL}registro/validar_otp`, data, function(res){
-				if(res.status != "success") return MAIN.showMessage("error", res.message);
-				MAIN.event("Salio pantalla autorización validación", "salio_autorizacion_validacion");
+				if(res.status != "success") {
+					return MAIN.showMessage("error", res.message);
+				}				
+
+				gtag('event', 'Paso_9_aceptar_consulta_historial', {'Paso_9_aceptar_consulta_historial': 'Paso_9_aceptar_consulta_historial'});
+
 				MAIN.showView("usuario_registrado");
 			});
 		}
@@ -414,18 +455,57 @@ myApp.onPageInit('autorizacion-validacion', function(page) {
 });
 
 myApp.onPageInit('usuario-registrado', function(page) {
+
+	MAIN.setPage('usuario_registrado');
+	gtag('event', 'Paso_11_ya_estas_registrado', {'Paso_11_ya_estas_registrado': 'Paso_11_ya_estas_registrado'});
+
 	MAIN.getStatus( (user) => {
 		$(`.folio`).html(`[${(user.curp || "").substring(0,10)}]`);
 
 		localStorage.removeItem("uuid");
-		localStorage.removeItem("base64_frente");
-		localStorage.removeItem("base64_reverso");
+		localStorage.removeItem("base64_frente");	
 	});
 
-	myApp.swiper('.page[data-page=usuario-registrado] .slider-hero .swiper-container', {
-		autoplay: 10000,
-		loop: true,
-		pagination: '.swiper-pagination',
-		paginationClickable: true
+	$(".page[data-page=usuario-registrado] .falabella").on("click", function(){
+		location.href = 'https://www.falabella.com.mx/';
+	});
+
+	
+
+});
+
+myApp.onPageInit('procesar-foto-error', function(page) {
+	
+	MAIN.setPage('procesar_foto_error');
+
+	$(".page[data-page=procesar-foto-error] .continuar").on("click", function(){
+		MAIN.showView("informacion_personal_full");
+	});
+});
+
+myApp.onPageInit('numero-registrado', function(page){
+
+	MAIN.setPage('numero_registrado');
+
+	$(".page[data-page=numero-registrado] .falabella").on("click", function(){
+		location.href = 'https://www.falabella.com.mx/';
+	});
+});
+
+myApp.onPageInit('procesar-datos', function(page){
+
+	MAIN.setPage('procesar_datos');
+
+	$(".page[data-page=procesar-datos] .falabella").on("click", function(){
+		location.href = 'https://www.falabella.com.mx/';
+	});
+});
+
+myApp.onPageInit('curp-registrado', function(page){
+
+	MAIN.setPage('curp_registrado');
+
+	$(".page[data-page=curp-registrado] .falabella").on("click", function(){
+		location.href = 'https://www.falabella.com.mx/';
 	});
 });

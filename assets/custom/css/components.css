@@ -27,7 +27,7 @@
 }
 
 .page[data-page=layout-grids] [class*='col-'] {
-  background-color: #2196F3;
+  background-color: #43ab34;
 	border: 1px dotted #BDC3C7;
 	color: #FFFFFF;
   padding: 5px;
@@ -55,7 +55,7 @@
 }
 
 .theme-blue .page[data-page=layout-grids] [class*='col-'] {
-	background-color: #2196F3;
+	background-color: #43ab34;
 }
 
 .theme-lightblue .page[data-page=layout-grids] [class*='col-'] {

@@ -11,7 +11,8 @@ var CATALOGO_SEXO = {'H':'Hombre', 'M': 'Mujer'},
 		material: true,
 		modalTitle: 'Flash Cards',
 		notificationCloseButtonText: 'OK',
-		scrollTopOnNavbarClick: true
+		scrollTopOnNavbarClick: true,
+		pushState: true
 	});
 
 	window.mainView = myApp.addView('.view-main');
@@ -135,6 +136,16 @@ var MAIN = {
 	   	reader.onerror = function (error) {
 	    	callback(error, null);
 	   	};
+	},
+	setPage: function(page){
+
+		let pagePath = '/'+page+'.html';
+		gtag('event', 'page_view', {
+			page_title: document.title,
+			page_location: 	location.href,
+			page_path: pagePath,
+			send_to: 'G-VYGWW1P5ZV'
+		  });
 	}
 }
 
